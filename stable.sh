@@ -1,5 +1,4 @@
 #!/bin/bash
-
 git checkout master
 git submodule init
 git submodule sync
@@ -11,3 +10,4 @@ git checkout -b stable
 ## commit
 git add stable.sh
 git commit -m 'creation script'
+git tag stable-$(date +%Y-%M-%d)
