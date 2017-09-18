@@ -493,7 +493,7 @@ class BaseModule(object):
                 except StopIteration:
                     end_of_batch = True
 
-                self.update_metric(eval_metric, data_batch.label)
+                self.update_metric(eval_metric, data_batch.label, pad=data_batch.pad)
 
                 if monitor is not None:
                     monitor.toc_print()
@@ -892,7 +892,7 @@ class BaseModule(object):
         """
         raise NotImplementedError()
 
-    def update_metric(self, eval_metric, labels):
+    def update_metric(self, eval_metric, labels, **kwargs):
         """Evaluates and accumulates evaluation metric on outputs of the last forward
         computation.
 
