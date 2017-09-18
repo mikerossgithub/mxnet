@@ -84,7 +84,7 @@ class EvalMetric(object):
             'label_names': self.label_names})
         return config
 
-    def update_dict(self, label, pred):
+    def update_dict(self, label, pred, **kwargs):
         """Update the internal evaluation with named label and pred
 
         Parameters
@@ -95,15 +95,20 @@ class EvalMetric(object):
         preds : list of NDArray
             name to array mapping of predicted outputs.
         """
+        pad = kwargs.get("pad", 0)
+
+        def _trim(x):
+            return x[:-pad] if pad else x
+
         if self.output_names is not None:
-            pred = [pred[name] for name in self.output_names]
+            pred = [_trim(pred[name]) for name in self.output_names]
         else:
-            pred = list(pred.values())
+            pred = _trim(list(pred.values()))
 
         if self.label_names is not None:
-            label = [label[name] for name in self.label_names]
+            label = [_trim(label[name]) for name in self.label_names]
         else:
-            label = list(label.values())
+            label = _trim(list(label.values()))
 
         self.update(label, pred)
 
@@ -268,7 +273,7 @@ class CompositeEvalMetric(EvalMetric):
             return ValueError("Metric index {} is out of range 0 and {}".format(
                 index, len(self.metrics)))
 
-    def update_dict(self, labels, preds): # pylint: disable=arguments-differ
+    def update_dict(self, labels, preds, **kwargs): # pylint: disable=arguments-differ
         if self.label_names is not None:
             labels = OrderedDict([i for i in labels.items()
                                   if i[0] in self.label_names])
@@ -277,7 +282,7 @@ class CompositeEvalMetric(EvalMetric):
                                  if i[0] in self.output_names])
 
         for metric in self.metrics:
-            metric.update_dict(labels, preds)
+            metric.update_dict(labels, preds, **kwargs)
 
     def update(self, labels, preds):
         """Updates the internal evaluation result.

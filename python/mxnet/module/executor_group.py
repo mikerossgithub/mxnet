@@ -546,7 +546,7 @@ class DataParallelExecutorGroup(object):
                     out_grads_slice.append(grad.copyto(self.contexts[i]))
             exec_.backward(out_grads=out_grads_slice)
 
-    def update_metric(self, eval_metric, labels):
+    def update_metric(self, eval_metric, labels, **kwargs):
         """Accumulate the performance according to `eval_metric` on all devices
         by comparing outputs from [begin, end) to labels. By default use all
         outputs.
@@ -579,7 +579,7 @@ class DataParallelExecutorGroup(object):
 
             labels_ = OrderedDict(zip(self.label_names, labels_slice))
             preds = OrderedDict(zip(self.output_names, texec.outputs))
-            eval_metric.update_dict(labels_, preds)
+            eval_metric.update_dict(labels_, preds, **kwargs)
 
     def _bind_ith_exec(self, i, data_shapes, label_shapes, shared_group):
         """Internal utility function to bind the i-th executor.
