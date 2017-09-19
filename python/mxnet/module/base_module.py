@@ -144,7 +144,7 @@ class BaseModule(object):
         - `get_outputs()`: get outputs of the previous forward operation.
         - `get_input_grads()`: get the gradients with respect to the inputs computed
           in the previous backward operation.
-        - `update_metric(metric, labels)`: update performance metric for the previous forward
+        - `update_metric(metric, labels, pad=data_batch.pad)`: update performance metric for the previous forward
           computed results.
 
     - other properties (mostly for backward compatibility)
@@ -902,12 +902,14 @@ class BaseModule(object):
             Evaluation metric to use.
         labels : list of NDArray
             Typically `data_batch.label`.
+        kwargs : dict of keyword arguments
+            Typically `pad=data_batch.pad`.
 
         Examples
         --------
         >>> # An example of updating evaluation metric.
         >>> mod.forward(data_batch)
-        >>> mod.update_metric(metric, data_batch.label)
+        >>> mod.update_metric(metric, data_batch.label, pad=data_batch.pad)
         """
         raise NotImplementedError()
 

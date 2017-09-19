@@ -96,7 +96,10 @@ class EvalMetric(object):
             name to array mapping of predicted outputs.
         """
         pad = kwargs.get("pad", 0)
-
+        print("updating with pad {}".format(pad))
+        print(self.output_names)
+        print(label)
+        print(pred)
         def _trim(x):
             return x[:-pad] if pad else x
 
