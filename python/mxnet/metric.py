@@ -95,23 +95,20 @@ class EvalMetric(object):
         preds : list of NDArray
             name to array mapping of predicted outputs.
         """
-        pad = kwargs.get("pad", 0)
-        print("updating with pad {}".format(pad))
-        print(self.output_names)
-        print(label)
-        print(pred)
+        pad = kwargs.get("pad", 0) or 0
+
         def _trim(x):
-            return x[:-pad] if pad else x
+            return x[:x.shape[0]-pad]
 
         if self.output_names is not None:
             pred = [_trim(pred[name]) for name in self.output_names]
         else:
-            pred = _trim(list(pred.values()))
+            pred = [_trim(x) for x in pred.values()]
 
         if self.label_names is not None:
             label = [_trim(label[name]) for name in self.label_names]
         else:
-            label = _trim(list(label.values()))
+            label = [_trim(x) for x in label.values()]
 
         self.update(label, pred)
 
